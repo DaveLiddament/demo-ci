@@ -1,5 +1,27 @@
 version: 2
 jobs:
+  deploy:
+    docker:
+    - image: circleci/php:7.1-apache-stretch-browsers
+
+    steps:
+    - checkout
+
+    - restore_cache:
+        keys:
+        - v2-php-vendor-{{ checksum "composer.lock" }}
+        - v2-php-vendor-
+    - run: composer install
+    - save_cache:
+        key: v2-php-vendor-{{ checksum "composer.lock" }}
+        paths:
+        - vendor
+    - run:
+        name: Deploy
+        command: |
+           ssh dave@daveliddament.co.uk /home/dave/codeid/deploy
+
+
   build:
     docker:
     - image: circleci/php:7.1-apache-stretch-browsers
@@ -65,6 +87,15 @@ workflows:
       - build
       - build-npm
       - security-check
+      - deploy:
+          requires:
+          - build
+          - build-npm
+          - security-check
+          filters:
+             - branches:
+                 only: master
+            
 
 
   security-check:
