@@ -20,3 +20,42 @@ jobs:
     - run: composer validate --strict
     - run: vendor/bin/parallel-lint src tests
     - run: vendor/bin/security-checker s:c
+
+  security-check:
+    docker:
+    - image: circleci/php:7.1-apache-stretch-browsers
+
+    steps:
+    - checkout
+
+    - restore_cache:
+        keys:
+        - v2-php-vendor-{{ checksum "composer.lock" }}
+        - v2-php-vendor-
+    - run: composer install
+    - save_cache:
+        key: v2-php-vendor-{{ checksum "composer.lock" }}
+        paths:
+        - vendor
+
+    - run: vendor/bin/security-checker security:check
+
+
+workflows:
+  version: 2
+  commit:
+    jobs:
+      - build
+
+
+  security-check:
+    triggers:
+      - schedule:
+          cron: "35 12 * * *"
+          filters:
+            branches:
+              only: master
+    jobs:
+      - security-check
+
+
