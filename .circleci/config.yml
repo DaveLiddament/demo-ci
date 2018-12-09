@@ -48,13 +48,13 @@ jobs:
 
     - restore_cache:
         keys:
-        - v2-node-vendor-{{ checksum "package-lock.json" }}
-        - v2-node-vendor-
+        - v3-node-vendor-{{ checksum "package-lock.json" }}
+        - v3-node-vendor-
     - run: npm install
     - save_cache:
-        key: v2-node-vendor-{{ checksum "package-lock.json" }}
+        key: v3-node-vendor-{{ checksum "package-lock.json" }}
         paths:
-        - vendor
+        - node_modules
     - run: npm run scss
 
 
