@@ -92,9 +92,6 @@ workflows:
           - build
           - build-npm
           - security-check
-          filters:
-             - branches:
-                 only: master
             
 
 
