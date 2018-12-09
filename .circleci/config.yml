@@ -19,7 +19,7 @@ jobs:
     - run:
         name: Deploy
         command: |
-           ssh dave@daveliddament.co.uk /home/dave/codeid/deploy
+           ssh -o StrictHostKeyChecking=no dave@daveliddament.co.uk /home/dave/codeid/deploy
 
 
   build:
